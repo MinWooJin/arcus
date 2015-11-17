@@ -17,22 +17,24 @@ if [ -z "$WORKDIR" ]; then
   exit 1
 fi
 
-pushd $WORKDIR
+pushd $WORKDIR > /dev/null
 git submodule init
 git submodule update
-popd
+popd > /dev/null
 
 # server
 echo "===== server ======"
-pushd $WORKDIR/server
-/bin/bash config/autorun.sh
-popd
+echo "===== server ======" >> $WORKDIR/scripts/build.log
+pushd $WORKDIR/server > /dev/null
+/bin/bash config/autorun.sh 1>> $WORKDIR/scripts/build.log
+popd > /dev/null
 
 # clients/c
 echo "===== c client ======"
-pushd $WORKDIR/clients/c
-/bin/bash config/autorun.sh
-popd
+echo "===== c client ======" >> $WORKDIR/scripts/build.log
+pushd $WORKDIR/clients/c > /dev/null
+/bin/bash config/autorun.sh 1>> $WORKDIR/scripts/build.log
+popd > /dev/null
 
 # deps/libevent -- uncomment below if you got libevent from the source
 #echo "===== libevent ======"
@@ -42,11 +44,12 @@ popd
 
 # zookeeper
 echo "===== zookeeper ======"
-pushd $WORKDIR/zookeeper
+echo "===== zookeeper ======" >> $WORKDIR/scripts/build.log
+pushd $WORKDIR/zookeeper > /dev/null
 sed -i -e s/,api-report//g build.xml # FIXME it looks like that api-report does not work properly (causing NPE)
-ant clean compile_jute bin-package
-popd
-pushd $WORKDIR/zookeeper/src/c
-autoreconf -if
-popd
+ant clean compile_jute bin-package 1>> $WORKDIR/scripts/build.log
+popd > /dev/null
+pushd $WORKDIR/zookeeper/src/c > /dev/null
+autoreconf -if 1>> $WORKDIR/scripts/build.log
+popd > /dev/null
 
