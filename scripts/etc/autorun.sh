@@ -17,10 +17,12 @@ if [ -z "$WORKDIR" ]; then
   exit 1
 fi
 
+echo "===== git submodule update ====="
 pushd $WORKDIR > /dev/null
 git submodule init
 git submodule update
 popd > /dev/null
+echo "===== git submodule update end ====="
 
 # server
 echo "===== server ======"
